@@ -4,7 +4,7 @@ This is a [Node.js](https://nodejs.org/en/) project movie test, created using No
 
 First, run the development server: Which is created on node express with type script.
 For backend code point to the backend folder.
-Create database on phpmyadmin and add database detais in .env file.
+Create database on phpmyadmin and add database details in .env file.
 
 ```bash
 npm run dev

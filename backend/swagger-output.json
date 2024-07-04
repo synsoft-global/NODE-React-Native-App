@@ -224,7 +224,7 @@
         }
       }
     },
-    "/movies/{id}": {
+    "/movies/getMovieById/{id}": {
       "get": {
         "tags": [
           "Movie"
@@ -248,7 +248,9 @@
             "description": "Unauthorized"
           }
         }
-      },
+      }
+    },
+    "/movies/{id}": {
       "put": {
         "tags": [
           "Movie"
