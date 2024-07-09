@@ -9,13 +9,14 @@
     "skipLibCheck": true ,    
     "baseUrl": ".",
     "paths": {
-      "@src/*": ["src/*"],
-      "@utils/*": ["src/utils/*"],
-      "@screens/*": ["src/screens/*"],
-      "@appConfig/*": ["appConfig"],
-      "@components/*": ["src/components/*"],
-      "@globalStyle/*": ["src/globalStyle/*"],
-      "@assets/*": ["./assets"],
+      "src/*": ["src/*"],
+      "utils/*": ["src/utils/*"],
+      "service/*": ["src/service/*"],
+      "screens/*": ["src/screens/*"],
+      "appConfig/*": ["appConfig"],
+      "components/*": ["src/components/*"],
+      "globalStyle/*": ["src/globalStyle/*"],
+      "assets/*": ["./assets"],
     }
   },
 }

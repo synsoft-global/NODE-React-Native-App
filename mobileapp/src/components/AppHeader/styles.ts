@@ -1,30 +1,38 @@
-import {StyleSheet} from 'react-native';
-import Colors from '@src/utils/colors';
+import { StyleSheet } from 'react-native';
+import Colors from 'utils/colors';
 import AppConfig from 'appConfig';
+
+const MARGINS = {
+  marginTop: 30,
+  marginHorizontal: 24,
+  marginBottom: 20,
+  marginLeft: 10,
+  marginTop5: 5,
+};
 
 const styles = StyleSheet.create({
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    marginTop: 30,
-    marginLeft: 24,
-    marginRight: 24,
-    marginBottom: 20,
-  },
-  title: {
-    fontFamily: AppConfig.MONTSERRAT_SEMI_BOLD_FONT,
-    fontSize: AppConfig.PT32,
-    color: Colors.COLOR_WHITE,
+    marginTop: MARGINS.marginTop,
+    marginLeft: MARGINS.marginHorizontal,
+    marginRight: MARGINS.marginHorizontal,
+    marginBottom: MARGINS.marginBottom,
   },
   centerContainer: {
     justifyContent: 'center',
     alignItems: 'center',
     flexDirection: 'row',
   },
+  title: {
+    fontFamily: AppConfig.MONTSERRAT_SEMI_BOLD_FONT,
+    fontSize: AppConfig.PT32,
+    color: Colors.COLOR_WHITE,
+  },
   img: {
-    marginLeft: 10,
-    marginTop: 5,
+    marginLeft: MARGINS.marginLeft,
+    marginTop: MARGINS.marginTop5,
   },
 });
 

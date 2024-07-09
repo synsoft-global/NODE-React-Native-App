@@ -1,5 +1,5 @@
 import AppConfig from 'appConfig';
-import Colors from '@src/utils/colors';
+import Colors from 'utils/colors';
 import {StyleSheet} from 'react-native';
 
 export const styles = StyleSheet.create({
@@ -20,11 +20,8 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     borderTopRightRadius: 12,
     borderTopLeftRadius: 12,
-    //height: 200,
     textAlign: 'center',
     justifyContent: 'space-around',
-    // alignContent: 'center',
-    // alignItems: 'center',
   },
   titleText: {
     margin: 10,

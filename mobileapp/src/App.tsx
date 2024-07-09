@@ -15,10 +15,9 @@ import {
 
 import {Colors} from 'react-native/Libraries/NewAppScreen';
 import {Provider} from 'react-redux';
-//import Navigation from './navigation/navigation';
 import Store from './redux';
 import RouteNavigation from './navigation';
-import colors from '@utils/colors';
+import colors from 'utils/colors';
 
 
 function App(): React.JSX.Element {

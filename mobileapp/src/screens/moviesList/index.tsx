@@ -3,58 +3,49 @@
  */
 import React, {useEffect, useState} from 'react';
 import {FlatList, Image, TouchableOpacity, View} from 'react-native';
-import {globalStyles} from '@globalStyle/index';
+import {globalStyles} from 'globalStyle/index';
 import {
   ButtonComponent,
   ImageComponentNoPress,
   TextViewComponent,
-} from '@components/viewComponents';
-import * as Constants from '@utils/constants';
-import Colors from '@utils/colors';
+} from 'components/viewComponents';
+import * as Constants from 'utils/constants';
+import Colors from 'utils/colors';
 import AppConfig from 'appConfig';
-import {useIsFocused, useNavigation} from '@react-navigation/native';
-import AppHeader from '@components/AppHeader';
-import {generateDynamicStyles} from '@globalStyle/dynamicStyles';
-import LoadingView from '@components/LoadingView';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+} from '@react-navigation/native';
+import AppHeader from 'components/AppHeader';
+import {generateDynamicStyles} from 'globalStyle/dynamicStyles';
+import LoadingView from 'components/LoadingView';
 import {useDispatch, useSelector} from 'react-redux';
-import {getMovieList} from '@src/redux/actions/getMovieList';
-import {moviesItemType} from '@src/types';
-import {showMessageAlert} from '@src/utils/apputils';
+import {getMovieList} from 'src/redux/actions/getMovieList';
+import {MoviesItemType} from 'src/types';
+import {showMessageAlert} from 'utils/apputils';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
-import {clearData} from '@src/redux/reducer/movieSlice';
+import {clearData} from 'src/redux/reducer/movieSlice';
 
-const bottomBg = require('@assets/img/bottom_bg.png');
-//const img = require('@assets/img/img.png');
-
+const bottomBg = require('assets/img/bottom_bg.png');
 const numColumns = 2;
 
+/**
+ * Define movie list screen functional component
+ * @returns Movie list view
+ */
 const MovieListScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const dispatch = useDispatch();
-  const {isLoading, data} = useSelector((state: any) => state.movies);
-  const isFocus = useIsFocused();
+  const {isLoading, data, totalCount} = useSelector(
+    (state: any) => state.movies,
+  );
   const [pageNo, setPagNo] = useState(1);
-  const [totalCount, setTotalCount] = useState('');
-  const [movieList, setMovieList]: any = useState([]);
 
   useEffect(() => {
-    if (data.movies && data.movies.length > 0) {
-      if (pageNo === 1) {
-        setTotalCount(data.totalPages);
-        setMovieList(data.movies);
-      } else {
-        setTotalCount(data.totalPages);
-        setMovieList([...movieList, ...data.movies]);
-      }
-    }
-  }, [data]);
-
-  useEffect(() => {
-    if (isFocus) {
-      getMoviewList(1);
-    }
-  }, [isFocus]);
+    getMoviewList(pageNo);
+  }, []);
 
   /**
    * Get moview list from server
@@ -66,7 +57,7 @@ const MovieListScreen = () => {
   /**
    * Handle add button click
    */
-  const handleAddNewMovieClick = (item: moviesItemType | null) => {
+  const handleAddNewMovieClick = (item: MoviesItemType | null) => {
     navigation.navigate(Constants.KEY_AD_EDIT_MOBIE, {movieInfo: item});
   };
 
@@ -74,9 +65,7 @@ const MovieListScreen = () => {
    * Render list items view
    * @returns list items view
    */
-  const renderListItems = ({item}: moviesItemType) => {
-    //item = item?.item;
-
+  const renderListItems = ({item}: {item: MoviesItemType}) => {
     return (
       <TouchableOpacity
         style={styles.listItemView}
@@ -108,7 +97,7 @@ const MovieListScreen = () => {
               marginLeft: 10,
             }).text
           }
-          text={new Date(item.publishingYear).getFullYear()}
+          text={new Date(item.publishingYear).getFullYear().toString()}
         />
       </TouchableOpacity>
     );
@@ -141,7 +130,7 @@ const MovieListScreen = () => {
    * Event called on end reached of list
    */
   const onEndReachedList = () => {
-    if (movieList?.length < totalCount) {
+    if (data?.length < totalCount * AppConfig.pageSize) {
       let newPage = pageNo + 1;
       setPagNo(newPage);
       getMoviewList(newPage);
@@ -149,7 +138,7 @@ const MovieListScreen = () => {
   };
 
   /**
-   * Log out use from app
+   * Handle Logout from app
    */
   const onLogout = () => {
     console.log('onLogout');
@@ -169,7 +158,7 @@ const MovieListScreen = () => {
 
   return (
     <View style={globalStyles.safeAreaStyle}>
-      {data.movies && data.movies.length > 0 && (
+      {data && data.length > 0 && (
         <AppHeader
           title={Constants.TEXT_MY_MOVIE}
           rightIcon={true}
@@ -179,7 +168,7 @@ const MovieListScreen = () => {
       )}
 
       <FlatList
-        data={data.movies ? data.movies : []}
+        data={data}
         numColumns={numColumns}
         contentContainerStyle={styles.flatListContentContainer}
         renderItem={renderListItems}

@@ -3,8 +3,6 @@
  * define all validation function here...
  *
  */
-import * as Yup from 'yup';
-import * as Constants from '@utils/constants';
 
 //validate for empty value
 export function emptyTextValidation(inputs: string) {
@@ -28,13 +26,5 @@ export function validateEmail(email: string) {
   } else {
     return false;
   }
-}
-
-//Validate Email
-export function emailValidation() {
-  return Yup.string()
-    .trim()
-    .email(Constants.VALID_EMAIL_MSG)
-    .required(Constants.REQUIRED_EMAIL_MSG);
 }
 

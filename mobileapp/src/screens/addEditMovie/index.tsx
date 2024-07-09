@@ -1,52 +1,63 @@
 /**
- * Define login screen functional component
+ * Define Add Edit Movie screen functional component
  */
-import React, {createRef, useEffect, useState} from 'react';
-import {
-  Image,
-  ScrollView,
-  TouchableOpacity,
-  View,
-} from 'react-native';
-import {globalStyles} from '@globalStyle/index';
+import React, {useEffect, useRef, useState} from 'react';
+import {Image, ScrollView, TouchableOpacity, View} from 'react-native';
+import {globalStyles} from 'globalStyle/index';
 import {
   ButtonComponent,
   ImageComponentNoPress,
   TextInputComponent,
   TextViewComponent,
-} from '@components/viewComponents';
-import * as Constants from '@utils/constants';
-import colors from '@utils/colors';
-import {useNavigation, useRoute} from '@react-navigation/native';
-import {emptyTextValidation} from '@src/utils/validationsUtils';
+} from 'components/viewComponents';
+import * as Constants from 'utils/constants';
+import colors from 'utils/colors';
+import {
+  NavigationProp,
+  ParamListBase,
+  useNavigation,
+  useRoute,
+} from '@react-navigation/native';
+import {emptyTextValidation} from 'src/utils/validationsUtils';
 
 import {
   addMovie,
   editMovie,
   uploadImage,
-} from '@src/redux/actions/getMovieList';
-import ImagePicker from '@src/components/ImagePicker';
-import {showSnackbarMessage} from '@src/utils/apputils';
-import DropDownComponent from '@src/components/dropDownComponent';
+} from 'src/redux/actions/getMovieList';
+import ImagePicker from 'components/ImagePicker';
+import {showSnackbarMessage} from 'utils/apputils';
+import DropDownComponent from 'components/dropDownComponent';
 import styles from './styles';
+import {ActionSheetRef} from 'react-native-actions-sheet';
+import {MoviesItemType} from 'src/types';
+import {ImagePickerResponse} from 'react-native-image-picker';
+import { useDispatch } from 'react-redux';
+import { updateMovieList } from 'src/redux/reducer/movieSlice';
 
-const bottomBg = require('@assets/img/bottom_bg.png');
-const uploadIcon = require('@assets/img/upload.png');
+//Imports images and icons
+const bottomBg = require('assets/img/bottom_bg.png');
+const uploadIcon = require('assets/img/upload.png');
 
+/**
+ * Define add edit movie functional component
+ * @returns Add Edit Movie View
+ */
 const AddEditMovie = () => {
-  const navigation = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const route = useRoute();
-  const {movieInfo}: any = route.params;
+  const {movieInfo} = route?.params as {movieInfo: MoviesItemType};
+  const dispatch = useDispatch();
+
   const [title, setTitle] = useState('');
   const [year, setYear] = useState('');
   const [titleError, setTitleError] = useState('');
   const [imgUri, setImgUri] = useState('');
   const [isLoading, setIsLoading] = useState(false);
 
-  const actionSheetRef: any = createRef();
+  const actionSheetRef = useRef<ActionSheetRef>(null);
 
   useEffect(() => {
-    console.log('movieInfo----', movieInfo);
     if (movieInfo !== null) {
       setTitle(movieInfo.title);
       setYear(new Date(movieInfo.publishingYear).getFullYear().toString());
@@ -68,9 +79,10 @@ const AddEditMovie = () => {
 
       if (movieInfo === null) {
         addMovie(request)
-          .then(result => {
+          .then((result:any) => {
             console.log('result---', result);
             setIsLoading(false);
+            dispatch(updateMovieList(result.movie));
             navigation.goBack();
           })
           .catch(error => {
@@ -79,9 +91,10 @@ const AddEditMovie = () => {
           });
       } else {
         editMovie(request, movieInfo.id.toString())
-          .then(result => {
+          .then((result: any) => {
             console.log('result---', result);
             setIsLoading(false);
+            dispatch(updateMovieList(result.movie));
             navigation.goBack();
           })
           .catch(error => {
@@ -148,7 +161,7 @@ const AddEditMovie = () => {
    * @param type
    */
   const uploadImagetoServer = async (
-    uri: any,
+    uri: string,
     type: string,
     fileName: string,
   ) => {
@@ -181,21 +194,9 @@ const AddEditMovie = () => {
             setTitle(text);
           }}
         />
-        {/* <TextInputComponent
-          inputContainer={styles.inputView}
-          containerStyle={globalStyles.inputContainerStyle}
-          inputStyle={globalStyles.inputTextStyle}
-          placeholder={Constants.TEXT_PUBLISH_YEAR}
-          placeholderTextColor={colors.COLOR_WHITE}
-          value={year}
-          error={yearError}
-          onChangeText={(text: string) => {
-            setYear(text);
-          }}
-        /> */}
         <DropDownComponent
-           onChange={(value: string) =>setYear(value)}
-           value={year}
+          onChange={(value: string) => setYear(value)}
+          value={year}
         />
         <TouchableOpacity
           style={styles.uploadImageView}
@@ -237,16 +238,22 @@ const AddEditMovie = () => {
       </View>
       <Image style={globalStyles.bottomCurveBg} source={bottomBg} />
       <ImagePicker
-        refs={actionSheetRef}
-        selectedImage={(response: any) => {
+        ref={actionSheetRef}
+        selectedImage={(response: ImagePickerResponse) => {
           if (response) {
             console.log('response----', response);
+            const {assets} = response;
 
-            uploadImagetoServer(
-              response?.assets[0]?.uri,
-              response?.assets[0]?.type,
-              response?.assets[0]?.fileName,
-            );
+            if (assets && assets.length > 0) {
+              const {uri, type, fileName} = assets[0];
+              if (uri && type && fileName) {
+                uploadImagetoServer(uri, type, fileName);
+              } else {
+                setImgUri('');
+              }
+            } else {
+              setImgUri('');
+            }
           } else {
             setImgUri('');
           }

@@ -3,29 +3,33 @@
  */
 import React, {useEffect, useState} from 'react';
 import {Image, View} from 'react-native';
-import {globalStyles} from '@globalStyle/index';
+import {globalStyles} from 'globalStyle/index';
 import {
   ButtonComponent,
   TextInputComponent,
   TextViewComponent,
-} from '@components/viewComponents';
-import * as Constants from '@utils/constants';
-import colors from '@utils/colors';
-import {useNavigation} from '@react-navigation/native';
+} from 'components/viewComponents';
+import * as Constants from 'utils/constants';
+import colors from 'utils/colors';
+import {NavigationProp, ParamListBase, useNavigation} from '@react-navigation/native';
 import {useDispatch, useSelector} from 'react-redux';
-import {login} from '@src/redux/actions/login';
-import {loginRequest} from '@src/types';
+import {login} from 'src/redux/actions/login';
+import {LoginRequest, UserDataType} from 'src/types';
 import {
   showSnackbarMessage,
   storeDataToAsyncStorage,
-} from '@src/utils/apputils';
-import {emptyTextValidation, validateEmail} from '@src/utils/validationsUtils';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+} from 'utils/apputils';
+import {emptyTextValidation, validateEmail} from 'utils/validationsUtils';
 
-const bottomBg = require('@assets/img/bottom_bg.png');
+// Imports images and icons
+const bottomBg = require('assets/img/bottom_bg.png');
 
+/**
+ * Define login screen functional component
+ * @returns login view
+ */
 const LoginScreen = () => {
-  const navigation: any = useNavigation();
+  const navigation = useNavigation<NavigationProp<ParamListBase>>();
   const dispatch = useDispatch();
   const [email, setEmail] = useState('');
   const [emailError, setEmailError] = useState('');
@@ -65,23 +69,22 @@ const LoginScreen = () => {
    * Handle login button click
    */
   const handleLoginClick = () => {
-    //navigation.navigate('movies');
     if (validateInput()) {
-      let req: loginRequest = {
+      let req: LoginRequest = {
         email: email,
         password: password,
       };
 
       dispatch(login(req))
         .unwrap()
-        .then(async (res: any) => {
+        .then(async (res: UserDataType) => {
           console.log('create account  res: -------------------', res);
-          await storeDataToAsyncStorage('userToken', res.token);
-          AsyncStorage.setItem('userInfo', JSON.stringify(res.user));
+          await storeDataToAsyncStorage(Constants.KEY_USER_TOKEN, res.token);
+          await storeDataToAsyncStorage(Constants.KEY_USER_INFO, JSON.stringify(res.user));
           showSnackbarMessage(res.message);
           navigation.navigate(Constants.KEY_MOVIEW);
         })
-        .catch((err: any) => {
+        .catch((err: string) => {
           console.log('err--', err);
         });
     }

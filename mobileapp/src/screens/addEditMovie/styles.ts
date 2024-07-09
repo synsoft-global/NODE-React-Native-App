@@ -1,5 +1,5 @@
 import {StyleSheet} from 'react-native';
-import Colors from '@src/utils/colors';
+import Colors from 'utils/colors';
 import AppConfig from 'appConfig';
 
 // Declare styles

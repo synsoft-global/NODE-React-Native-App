@@ -43,6 +43,9 @@ export const KEY_LOGIN = 'login';
 export const KEY_SPLASH = 'splash';
 export const KEY_MOVIEW = 'movies';
 export const KEY_AD_EDIT_MOBIE = 'add_edit_movies';
+export const KEY_USER_INFO = 'userInfo';
+export const KEY_USER_TOKEN = 'userToken';
+export const MEDIA_TYPE = 'photo';
 
 
 export const yearDropDownData = [

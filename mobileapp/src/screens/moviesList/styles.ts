@@ -1,5 +1,5 @@
 import {Dimensions, StyleSheet} from 'react-native';
-import Colors from '@utils/colors';
+import Colors from 'utils/colors';
 import AppConfig from 'appConfig';
 const numColumns = 2;
 const screenWidth = Dimensions.get('window').width;

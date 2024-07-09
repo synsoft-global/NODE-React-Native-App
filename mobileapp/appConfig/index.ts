@@ -38,6 +38,8 @@ export default {
   PT36: 36,
   PT48: 48,
 
+  pageSize: 10,
+
 
   //Montserrat VariableFont
   MONTSERRAT_BLACK_FONT: 'Montserrat-Black', //weight-900

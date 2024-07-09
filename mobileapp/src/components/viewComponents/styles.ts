@@ -1,6 +1,6 @@
 import {StyleSheet} from 'react-native';
 import AppConfig from 'appConfig';
-import Colors from '@utils/colors';
+import Colors from 'utils/colors';
 
 const styles = StyleSheet.create({
   btnContainer: {

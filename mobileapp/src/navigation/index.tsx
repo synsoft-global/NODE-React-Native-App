@@ -6,11 +6,11 @@
 import React from 'react';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
-import LoginScreen from '@screens/login';
-import MovieListScreen from '@screens/moviesList';
-import AddEditMovie from '@screens/addEditMovie';
-import SplashScreen from '@screens/splash';
-import * as Constants from '@utils/constants';
+import LoginScreen from 'screens/login';
+import MovieListScreen from 'screens/moviesList';
+import AddEditMovie from 'screens/addEditMovie';
+import SplashScreen from 'screens/splash';
+import * as Constants from 'utils/constants';
 
 //Stack Navigator
 const Stack = createNativeStackNavigator();

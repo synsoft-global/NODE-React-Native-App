@@ -1,61 +1,76 @@
 import {createAsyncThunk} from '@reduxjs/toolkit';
-import { showSnackbarMessage } from '@src/utils/apputils';
-import {get, post, put} from '@utils/client';
+import {showSnackbarMessage} from 'utils/apputils';
+import {get, post, put} from 'service/index';
 import AppConfig from 'appConfig';
+import {
+  AddMovieRequest,
+  AddMovieResponse,
+  ErrorResponse,
+  GetMovieListResponse,
+} from 'src/types';
 
 export const getMovieList: any = createAsyncThunk(
   'getMovieList',
   async (page, {rejectWithValue}) => {
     try {
-      const {data}: any = await get(
-        `${AppConfig.API_URL}${AppConfig.GET_MOVIES}page=${page}&limit=10`,
+      const data = await get<GetMovieListResponse>(
+        `${AppConfig.API_URL}${AppConfig.GET_MOVIES}page=${page}&limit=${AppConfig.pageSize}`,
       );
-      
+
       return data;
-    } catch (error: any) {
-      return rejectWithValue(error.message);
+    } catch (error) {
+      if (error && typeof error === 'object' && 'message' in error) {
+        return rejectWithValue((error as ErrorResponse).message);
+      } else {
+        return rejectWithValue('An unknown error occurred');
+      }
     }
   },
 );
 
-
 // Add movie api call request
-export const addMovie = async (request: any) => {
+export const addMovie = async (request: AddMovieRequest) => {
   try {
-    const {data}: any = await post(
+    const data = await post<AddMovieResponse>(
       `${AppConfig.API_URL}${AppConfig.ADD_MOVIES}`,
       request,
     );
 
     showSnackbarMessage(data.message);
     return data;
-  } catch (error: any) {
-    showSnackbarMessage(error.message);
+  } catch (error) {
+    if (error && typeof error === 'object' && 'message' in error) {
+      return showSnackbarMessage((error as ErrorResponse).message);
+    } else {
+      return showSnackbarMessage('An unknown error occurred');
+    }
   }
 };
 
 // Add movie api call request
-export const editMovie = async (request: any, id: string) => {
+export const editMovie = async (request: AddMovieRequest, id: string) => {
   try {
-    const {data}: any = await put(
+    const data = await put<AddMovieResponse>(
       `${AppConfig.API_URL}${AppConfig.EDIT_MOVIES}${id}`,
       request,
     );
 
     showSnackbarMessage(data.message);
     return data;
-  } catch (error: any) {
-    showSnackbarMessage(error.message);
+  } catch (error) {
+    if (error && typeof error === 'object' && 'message' in error) {
+      return showSnackbarMessage((error as ErrorResponse).message);
+    } else {
+      return showSnackbarMessage('An unknown error occurred');
+    }
   }
 };
 
 // Upload image request
-export const uploadImage = (data: any, type: string, fileName: string) => {
-  console.log('final sddta: ', data, type);
-
+export const uploadImage = (uri: string, type: string, fileName: string) => {
   const formdata = new FormData();
   formdata.append('file', {
-    uri: data,
+    uri: uri,
     type: type,
     name: fileName,
   });

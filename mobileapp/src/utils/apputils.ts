@@ -1,16 +1,16 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Snackbar from 'react-native-snackbar';
-import Colors from '@utils/colors';
-import * as Constants from '@utils/constants';
+import Colors from 'utils/colors';
+import * as Constants from 'utils/constants';
 import {Alert} from 'react-native';
 
 /**
- * get token fron local storage
+ * get token from local storage
  * @returns token
  */
 const getTokenFromAsyncStorage = async () => {
   try {
-    const token = await AsyncStorage.getItem('userToken');
+    const token = await AsyncStorage.getItem(Constants.KEY_USER_TOKEN);
     return token;
   } catch (error) {
     console.log('Error getting token from AsyncStorage:', error);
@@ -19,20 +19,25 @@ const getTokenFromAsyncStorage = async () => {
 };
 
 /**
- * get token fron local storage
- * @returns token
+ * get stored data from local storage by key
+ * @returns data
  */
 const getDataFromAsyncStorage = async (key: string) => {
   try {
-    const token = await AsyncStorage.getItem(key);
-    return token;
+    const data = await AsyncStorage.getItem(key);
+    return data;
   } catch (error) {
     console.log('Error getting token from AsyncStorage:', error);
     return null;
   }
 };
 
-const storeDataToAsyncStorage = async (key: string, data: any) => {
+/**
+ *
+ * @param key unique key for data to be stored
+ * @param data info to be stored by give key
+ */
+const storeDataToAsyncStorage = async (key: string, data: string) => {
   try {
     await AsyncStorage.setItem(key, data);
   } catch (error) {
@@ -54,7 +59,12 @@ const showSnackbarMessage = (message: string) => {
   }, 500);
 };
 
-const showMessageAlert = (message: string, onLogout: any) => {
+/**
+ *
+ * @param message to be show
+ * @param onLogout callback function
+ */
+const showMessageAlert = (message: string, onLogout?: () => void) => {
   setTimeout(() => {
     Alert.alert(
       Constants.ALERT_TITLE,
@@ -66,7 +76,9 @@ const showMessageAlert = (message: string, onLogout: any) => {
         {
           text: Constants.TEXT_YES,
           onPress: () => {
-            onLogout();
+            if (onLogout) {
+              onLogout();
+            }
           },
         },
       ],

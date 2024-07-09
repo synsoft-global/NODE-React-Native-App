@@ -1,7 +1,7 @@
 /**
  * declare global stule used in app.
  */
-import Colors from '@utils/colors';
+import Colors from 'utils/colors';
  import AppConfig from 'appConfig';
 import {StyleSheet} from 'react-native';
 

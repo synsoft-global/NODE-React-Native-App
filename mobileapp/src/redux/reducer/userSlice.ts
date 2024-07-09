@@ -1,53 +1,50 @@
 // reducers/userSlice.js
-import {createSlice} from '@reduxjs/toolkit';
-import { login } from '../actions/login';
+import {createSlice, PayloadAction} from '@reduxjs/toolkit';
+import {login} from '../actions/login';
+import {UserDataType} from 'src/types'; // Adjust as per your types file
 
-/**
- * Create Slice for User Reducer
- *
- * * */
+interface UserState {
+  userData: UserDataType | undefined;
+  isLoading: boolean;
+  errorMessage: string;
+}
 
-const initialState = {
-  userData: {},
+const initialState: UserState = {
+  userData: undefined,
   isLoading: false,
   errorMessage: '',
 };
 
 const userSlice = createSlice({
   name: 'login',
-  initialState: initialState,
+  initialState,
   reducers: {
-    setUser: (state, action) => {
+    setUser: (state, action: PayloadAction<UserDataType>) => {
       state.userData = action.payload;
     },
     clearUser: state => {
-      state.userData = {};
+      state.userData = undefined;
+      state.errorMessage = '';
     },
   },
-
-  extraReducers: (builder: any) => {
-    builder.addCase(
-      login.pending,
-      (state: any) => {
-        state.isLoading = true;
-      },
-    );
+  extraReducers: builder => {
+    builder.addCase(login.pending, state => {
+      state.isLoading = true;
+      state.errorMessage = '';
+    });
 
     builder.addCase(
       login.fulfilled,
-      (state: any, action: any) => {
+      (state, action: PayloadAction<{user: UserDataType}>) => {
         state.isLoading = false;
         state.userData = action.payload.user;
       },
     );
 
-    builder.addCase(
-      login.rejected,
-      (state: any, action: any) => {
-        state.isLoading = false;
-        state.errorMessage = action.payload;
-      },
-    );
+    builder.addCase(login.rejected, (state, action: PayloadAction<string>) => {
+      state.isLoading = false;
+      state.errorMessage = action.payload || 'Unknown error occurred.';
+    });
   },
 });
 
